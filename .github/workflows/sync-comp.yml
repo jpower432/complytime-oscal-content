@@ -48,11 +48,15 @@ jobs:
           PRODUCT:  ${{ github.event.inputs.product}}
           CAC_PROFILE: ${{ github.event.inputs.cac-profile-id }}
           TYPE: ${{ github.event.inputs.component-type }}
+          CAC_CONTENT_ROOT: ${{ env.GITHUB_WORKSPACE  }}/content
+          ACTOR: ${{ github.actor }}
         run: |
           trestlebot sync-cac-content component-definition \
-          --cac-content-root "$GITHUB_WORKSPACE/content" \
+          --cac-content-root "$CAC_CONTENT_ROOT" \
           --cac-profile "$CAC_CONTENT_ROOT/content/products/$PRODUCT/profiles/$CAC_PROFILE.profile" \
           --oscal-profile $OSCAL_PROFILE \
           --product "$PRODUCT" \
           --component-definition-type "$TYPE" \
+          --author-name="$ACTOR" \
+          --author-email="$ACTOR@users.noreply.github.com" \
           --file-patterns="component-definitions/*"
