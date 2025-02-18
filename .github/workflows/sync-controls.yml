@@ -1,14 +1,17 @@
-name: Create test control for a product from CaC
+name: CaC to OSCAL Control Models
 on:
   workflow_dispatch:
    inputs:
       cac-reference:
-        description: 'Compliance as Code git reference'
+        description: Compliance as Code git reference
         required: true
         default: 'master'
       policy-id:
         required: true
         description: Name of CaC control policy to process
+      product:
+        required: true
+        description: Name of CaC product to process
 
 permissions: read-all
 
@@ -23,28 +26,33 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v4
+        with:
+          path: complytime-content
       - name: Checkout CaC repo
         uses: actions/checkout@v4
         with:
           repository: ComplianceAsCode/content
           ref: ${{ github.event.inputs.cac-reference }}
-          path: ${{ github.workspace }}/content
-      - name: Set git safe directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          path: content
       - name: Update catalog
+        working-directory: ./complytime-content
         env:
-          CAC_CONTENT_ROOT:  ${{ github.workspace }}/content
           POLICY: ${{ github.event.inputs.policy-id }}
         run: |
           trestlebot sync-cac-content catalog \
-          --cac-content-root "$CAC_CONTENT_ROOT" \
+          --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
-          --dry-run
+          --file-patterns="catalogs/*"
       - name: Update profile
+        working-directory: ./complytime-content
+        env:
+          POLICY: ${{ github.event.inputs.policy-id }}
+          PRODUCT:  ${{ github.event.inputs.product}}
         run: |
           trestlebot sync-cac-content profile \
-          --cac-content-root content \
+          --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
-          --dry-run
+          --product "$PRODUCT" \
+          --file-patterns="profiles/*"
