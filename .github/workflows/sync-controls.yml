@@ -38,21 +38,27 @@ jobs:
         working-directory: ./complytime-content
         env:
           POLICY: ${{ github.event.inputs.policy-id }}
+          ACTOR: ${{ github.actor }}
         run: |
           trestlebot sync-cac-content catalog \
           --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
+          --author-name="$ACTOR" \
+          --author-email="$ACTOR@users.noreply.github.com" \
           --file-patterns="catalogs/*"
       - name: Update profile
         working-directory: ./complytime-content
         env:
           POLICY: ${{ github.event.inputs.policy-id }}
           PRODUCT:  ${{ github.event.inputs.product}}
+          ACTOR: ${{ github.actor }}
         run: |
           trestlebot sync-cac-content profile \
           --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
           --product "$PRODUCT" \
+          --author-name="$ACTOR" \
+          --author-email="$ACTOR@users.noreply.github.com" \
           --file-patterns="profiles/*"
