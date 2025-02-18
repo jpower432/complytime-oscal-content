@@ -1,14 +1,17 @@
-name: Create test control for a product from CaC
+name: CaC to OSCAL Control Models
 on:
   workflow_dispatch:
    inputs:
       cac-reference:
-        description: 'Compliance as Code git reference'
+        description: Compliance as Code git reference
         required: true
         default: 'master'
       policy-id:
         required: true
         description: Name of CaC control policy to process
+      product:
+        required: true
+        description: Name of CaC product to process
 
 permissions: read-all
 
@@ -28,7 +31,7 @@ jobs:
         with:
           repository: ComplianceAsCode/content
           ref: ${{ github.event.inputs.cac-reference }}
-          path: ${{ github.workspace }}/content
+          path: ${{ runner.workspace }}/content
       - name: Set git safe directory
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Update catalog
@@ -42,9 +45,14 @@ jobs:
           --oscal-catalog "$POLICY" \
           --dry-run
       - name: Update profile
+        env:
+          CAC_CONTENT_ROOT: ${{ runner.workspace }}/content
+          POLICY: ${{ github.event.inputs.policy-id }}
+          PRODUCT:  ${{ github.event.inputs.product}}
         run: |
           trestlebot sync-cac-content profile \
-          --cac-content-root content \
+          --cac-content-root "$CAC_CONTENT_ROOT" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
+          --product "$PRODUCT" \
           --dry-run
