@@ -26,32 +26,32 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v4
+        with:
+          path: complytime-content
       - name: Checkout CaC repo
         uses: actions/checkout@v4
         with:
           repository: ComplianceAsCode/content
           ref: ${{ github.event.inputs.cac-reference }}
-          path: ${{ runner.workspace }}/content
-      - name: Set git safe directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          path: content
       - name: Update catalog
+        working-directory: ./complytime-content
         env:
-          CAC_CONTENT_ROOT:  ${{ github.workspace }}/content
           POLICY: ${{ github.event.inputs.policy-id }}
         run: |
           trestlebot sync-cac-content catalog \
-          --cac-content-root "$CAC_CONTENT_ROOT" \
+          --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
           --dry-run
       - name: Update profile
+        working-directory: ./complytime-content
         env:
-          CAC_CONTENT_ROOT: ${{ runner.workspace }}/content
           POLICY: ${{ github.event.inputs.policy-id }}
           PRODUCT:  ${{ github.event.inputs.product}}
         run: |
           trestlebot sync-cac-content profile \
-          --cac-content-root "$CAC_CONTENT_ROOT" \
+          --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
           --product "$PRODUCT" \

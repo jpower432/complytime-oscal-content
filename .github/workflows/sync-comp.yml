@@ -33,24 +33,24 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v4
+        with:
+          path: complytime-content
       - name: Checkout CaC repo
         uses: actions/checkout@v4
         with:
           repository: ComplianceAsCode/content
           ref: ${{ github.event.inputs.cac-reference }}
-          path: ${{ runner.workspace }}/content
-      - name: Set git safe directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          path: content
       - name: Update component definition
+        working-directory: ./complytime-content
         env: 
           OSCAL_PROFILE: ${{ github.event.inputs.oscal-profile }}
           PRODUCT:  ${{ github.event.inputs.product}}
           CAC_PROFILE: ${{ github.event.inputs.cac-profile-id }}
-          CAC_CONTENT_ROOT:  ${{ runner.workspace }}/content
           TYPE: ${{ github.event.inputs.component-type }}
         run: |
           trestlebot sync-cac-content component-definition \
-          --cac-content-root "$CAC_CONTENT_ROOT" \
+          --cac-content-root "$GITHUB_WORKSPACE/content" \
           --cac-profile "$CAC_CONTENT_ROOT/content/products/$PRODUCT/profiles/$CAC_PROFILE.profile" \
           --oscal-profile $OSCAL_PROFILE \
           --product "$PRODUCT" \
