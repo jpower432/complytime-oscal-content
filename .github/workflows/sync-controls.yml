@@ -43,7 +43,7 @@ jobs:
           --cac-content-root "$GITHUB_WORKSPACE/content" \
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
-          --dry-run
+          --file-patterns="catalogs/*"
       - name: Update profile
         working-directory: ./complytime-content
         env:
@@ -55,4 +55,4 @@ jobs:
           --policy-id "$POLICY" \
           --oscal-catalog "$POLICY" \
           --product "$PRODUCT" \
-          --dry-run
+          --file-patterns="profiles/*"

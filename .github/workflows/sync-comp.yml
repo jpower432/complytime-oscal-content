@@ -55,4 +55,4 @@ jobs:
           --oscal-profile $OSCAL_PROFILE \
           --product "$PRODUCT" \
           --component-definition-type "$TYPE" \
-          --dry-run
+          --file-patterns="component-definitions/*"
