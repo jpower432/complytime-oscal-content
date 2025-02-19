@@ -1,0 +1,36 @@
+{
+  "profile": {
+    "uuid": "0acd153d-ea9a-489e-ad74-f15354badc3d",
+    "metadata": {
+      "title": "e8-base",
+      "last-modified": "2025-02-19T15:51:15.357267+00:00",
+      "version": "REPLACE_ME",
+      "oscal-version": "1.1.2"
+    },
+    "imports": [
+      {
+        "href": "trestle:///__w/complytime-oscal-content/complytime-oscal-content/complytime-content/catalogs/e8/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "app_control",
+              "app_hardening",
+              "backups",
+              "hardening",
+              "mfa",
+              "patching",
+              "restrict_admin",
+              "restrict_macros"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "combine": {
+        "method": "merge"
+      },
+      "as-is": true
+    }
+  }
+}
